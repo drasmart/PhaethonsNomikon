@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaethonsNomikon", "PhaethonsNomikon\PhaethonsNomikon.csproj", "{96EC7444-7401-44AF-8967-A8B0587933BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySimpleLogging", "MySimpleLogging\MySimpleLogging.csproj", "{B1D05A9A-5DEC-478A-BBB1-6B47126018DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySimpleLoggingTests", "MySimpleLoggingTests\MySimpleLoggingTests.csproj", "{9F69FC7A-CA66-4F6C-A1E6-497425F1575F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{96EC7444-7401-44AF-8967-A8B0587933BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96EC7444-7401-44AF-8967-A8B0587933BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96EC7444-7401-44AF-8967-A8B0587933BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1D05A9A-5DEC-478A-BBB1-6B47126018DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1D05A9A-5DEC-478A-BBB1-6B47126018DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1D05A9A-5DEC-478A-BBB1-6B47126018DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1D05A9A-5DEC-478A-BBB1-6B47126018DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F69FC7A-CA66-4F6C-A1E6-497425F1575F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F69FC7A-CA66-4F6C-A1E6-497425F1575F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F69FC7A-CA66-4F6C-A1E6-497425F1575F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F69FC7A-CA66-4F6C-A1E6-497425F1575F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
