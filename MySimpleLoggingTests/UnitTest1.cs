@@ -225,4 +225,45 @@ public class Tests
             Assert.That(values[0].Value, Is.EqualTo(scopeValue));
         });
     }
+
+    [Test]
+    public void LogInformation_String_ScopedByTemplate()
+    {
+        var now = DateTime.Now;
+        const string fmtKey = "f-key";
+        const string fmtValue = "f-value";
+        const string dataKey = "test-key";
+        const string dataValue = "test-value";
+        const string scopeFormat = $"test-scope -- {{{fmtKey}}} = {{{fmtValue}}}";
+        const string scope = $"test-scope -- {dataKey} = {dataValue}";
+        const string msg = $"test-message";
+        
+        using LoggingService provider = new(() => now);
+        var logger = provider.CreateLogger(nameof(Tests));
+        using (logger.BeginScope(scopeFormat, dataKey, dataValue))
+        {
+            logger.LogInformation(msg);
+        }
+
+        var allEntries = LoggingService.Logs.ToList();
+        Assert.Multiple(() =>
+        {
+            Assert.That(allEntries, Has.Count.EqualTo(1));
+            var entry = allEntries[0];
+            Assert.That(entry.Level, Is.EqualTo(LogLevel.Information));
+            Assert.That(entry.Timestamp, Is.EqualTo(now));
+            Assert.That(entry.Message, Is.EqualTo(msg));
+            Assert.That(entry.ScopeNames, Is.Not.Null);
+            var scopeNames = entry.ScopeNames!.ToList();
+            Assert.That(scopeNames, Has.Count.EqualTo(1));
+            Assert.That(scopeNames[0], Is.EqualTo(scope));
+            Assert.That(entry.Values, Is.Not.Null);
+            var values = entry.Values!.ToList();
+            Assert.That(values, Has.Count.EqualTo(2));
+            Assert.That(values[0].Key, Is.EqualTo(fmtKey));
+            Assert.That(values[0].Value, Is.EqualTo(dataKey));
+            Assert.That(values[1].Key, Is.EqualTo(fmtValue));
+            Assert.That(values[1].Value, Is.EqualTo(dataValue));
+        });
+    }
 }
