@@ -13,7 +13,7 @@ namespace PhaethonsNomikon;
 /// </summary>
 public partial class App : Application
 {
-    internal IServiceProvider? ServiceProvider { get; private set; }
+    public IServiceProvider ServiceProvider { get; private set; } = null!;
 
     protected override void OnStartup(StartupEventArgs e)
     {

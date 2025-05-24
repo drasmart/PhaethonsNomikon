@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace PhaethonsNomikon;
 
@@ -18,15 +20,18 @@ public partial class MainWindow : Window
 {
     private readonly double _logBoxMinHeight;
     private double _lastLogBoxHeight;
+    private readonly ILogger _logger;
     
     public MainWindow()
     {
+        _logger = ((App)Application.Current).ServiceProvider.GetRequiredService<ILogger<MainWindow>>();
         InitializeComponent();
         _logBoxMinHeight = LogContainer.RowDefinitions[2].MinHeight;
     }
     
     private void ToggleLogView_Checked(object sender, RoutedEventArgs e)
     {
+        _logger.LogInformation("Toggle Log View -- {new-state}", true);
         if (LogViewBox != null)
         {
             LogViewBox.Visibility = Visibility.Visible;
@@ -42,6 +47,7 @@ public partial class MainWindow : Window
 
     private void ToggleLogView_Unchecked(object sender, RoutedEventArgs e)
     {
+        _logger.LogInformation("Toggle Log View -- {new-state}", false);
         if (LogViewBox != null)
         {
             _lastLogBoxHeight = LogViewBox.ActualHeight;

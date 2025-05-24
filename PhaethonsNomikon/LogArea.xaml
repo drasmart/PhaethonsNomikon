@@ -4,10 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PhaethonsNomikon"
+             xmlns:mySimpleLogging="clr-namespace:MySimpleLogging;assembly=MySimpleLogging"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <ScrollViewer>
-        <TextBox x:Name="LogView" FontFamily="Consolas" FontSize="12" Background="Orange"
-                 IsReadOnly="True" TextWrapping="Wrap" Text="Logs will appear here..."/>
-    </ScrollViewer>
+    <ListBox ItemsSource="{Binding  Source={x:Static mySimpleLogging:LoggingService.Logs}}" Background="Orange">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Timestamp}" />
+                    <TextBlock Text="{Binding Level}" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Message}" />
+                        <ListBox ItemsSource="{Binding Values}" Background="Orange">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Key}" />
+                                        <TextBlock Text="{Binding Value}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
 </UserControl>

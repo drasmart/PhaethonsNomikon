@@ -1,12 +1,13 @@
-﻿using System.Text.Json;
+﻿using System.Collections.ObjectModel;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace MySimpleLogging;
 
 public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerProvider
 {
-    public static IReadOnlyList<LogEntry> Logs => RawLogs;
-    private static readonly List<LogEntry> RawLogs = new();
+    private static readonly ObservableCollection<LogEntry> RawLogs = new();
+    public static readonly ReadOnlyObservableCollection<LogEntry> Logs = new(RawLogs);
     private static readonly AsyncLocal<List<ScopeState>> Scopes = new();
 
     public static void ClearLogs() => RawLogs.Clear();
