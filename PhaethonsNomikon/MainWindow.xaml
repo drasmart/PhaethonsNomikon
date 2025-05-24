@@ -28,15 +28,12 @@
             </Grid.RowDefinitions>
 
             <!-- Main Content -->
-            <Grid Grid.Row="0" Background="Pink">
-                <TextBlock Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Grid>
+            <local:MainArea Grid.Row="0"/>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
-            <StackPanel Grid.Row="2" x:Name="LogViewBox" Background="Orange">
-                <TextBlock Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <TextBox x:Name="LogView" FontFamily="Consolas" FontSize="12"
+            <ScrollViewer Grid.Row="2" x:Name="LogViewBox">
+                <TextBox x:Name="LogView" FontFamily="Consolas" FontSize="12" Background="Orange"
                          IsReadOnly="True" TextWrapping="Wrap" Text="Logs will appear here..."/>
-            </StackPanel>
+            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>
