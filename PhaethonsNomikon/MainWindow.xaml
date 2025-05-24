@@ -28,12 +28,9 @@
             </Grid.RowDefinitions>
 
             <!-- Main Content -->
-            <local:MainArea Grid.Row="0"/>
+            <local:MainArea Grid.Row="0" />
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
-            <ScrollViewer Grid.Row="2" x:Name="LogViewBox">
-                <TextBox x:Name="LogView" FontFamily="Consolas" FontSize="12" Background="Orange"
-                         IsReadOnly="True" TextWrapping="Wrap" Text="Logs will appear here..."/>
-            </ScrollViewer>
+            <local:LogArea Grid.Row="2" x:Name="LogViewBox" />
         </Grid>
     </DockPanel>
 </Window>
