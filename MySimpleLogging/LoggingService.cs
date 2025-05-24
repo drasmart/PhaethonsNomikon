@@ -8,11 +8,6 @@ public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerPro
     public static IReadOnlyList<LogEntry> Logs => RawLogs;
     private static readonly List<LogEntry> RawLogs = new();
     private static readonly AsyncLocal<List<ScopeState>> Scopes = new();
-    
-    static LoggingService()
-    {
-        Scopes.Value = [];
-    }
 
     public static void ClearLogs() => RawLogs.Clear();
     
@@ -47,20 +42,20 @@ public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerPro
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
+            using var scope = DoBeginScope(state, temporary: true);
+            List<string> names = new();
+            Dictionary<string, object> values = new();
+            MergeScopes(names, values);
+            var newEntry = new LogEntry
+            {
+                Timestamp = dateTimeProvider(),
+                Level = logLevel,
+                Message = formatter(state, exception),
+                ScopeNames = names.Count > 0 ? names : null,
+                Values = values.Count > 0 ? values : null,
+            };
             lock (RawLogs)
             {
-                using var scope = DoBeginScope(state, temporary: true);
-                List<string> names = new();
-                Dictionary<string, object> values = new();
-                MergeScopes(names, values);
-                var newEntry = new LogEntry
-                {
-                    Timestamp = dateTimeProvider(),
-                    Level = logLevel,
-                    Message = formatter(state, exception),
-                    ScopeNames = names.Count > 0 ? names : null,
-                    Values = values.Count > 0 ? values : null,
-                };
                 RawLogs.Add(newEntry);
             }
         }
@@ -71,7 +66,8 @@ public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerPro
 
         private IDisposable DoBeginScope<TState>(TState state, bool temporary)
         {
-            Scopes.Value?.Add(ToScopeState(state, temporary));
+            Scopes.Value ??= [];
+            Scopes.Value.Add(ToScopeState(state, temporary));
             return new Scope();
         }
 
