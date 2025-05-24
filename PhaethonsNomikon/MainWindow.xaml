@@ -22,7 +22,7 @@
         </StatusBar>
         <Grid x:Name="LogContainer">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="30"/> <!-- Log Controls -->
+                <RowDefinition Height="*" MinHeight="30"/> <!-- Log Controls -->
                 <RowDefinition Height="5"/> <!-- Splitter -->
                 <RowDefinition Height="*" MinHeight="30"/> <!-- Log View -->
             </Grid.RowDefinitions>

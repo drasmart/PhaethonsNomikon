@@ -17,6 +17,7 @@ namespace PhaethonsNomikon;
 public partial class MainWindow : Window
 {
     private readonly double _logBoxMinHeight;
+    private double _lastLogBoxHeight;
     
     public MainWindow()
     {
@@ -32,11 +33,10 @@ public partial class MainWindow : Window
         }
         if (LogContainer?.RowDefinitions != null && LogContainer.RowDefinitions.Count >= 3)
         {
-            LogContainer.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star); // Main content fills space
             LogContainer.RowDefinitions[1].Height = new GridLength(5); // Show splitter
             // Show log view
             LogContainer.RowDefinitions[2].MinHeight = _logBoxMinHeight;
-            LogContainer.RowDefinitions[2].Height = new GridLength(1, GridUnitType.Star);
+            LogContainer.RowDefinitions[2].Height = new GridLength(_lastLogBoxHeight);
         }
     }
 
@@ -44,11 +44,11 @@ public partial class MainWindow : Window
     {
         if (LogViewBox != null)
         {
+            _lastLogBoxHeight = LogViewBox.ActualHeight;
             LogViewBox.Visibility = Visibility.Collapsed;
         }
         if (LogContainer?.RowDefinitions != null && LogContainer.RowDefinitions.Count >= 3)
         {
-            LogContainer.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star); // Main content fills space
             LogContainer.RowDefinitions[1].Height = new GridLength(0); // Hide splitter
             // Collapse log view
             LogContainer.RowDefinitions[2].MinHeight = 0;
