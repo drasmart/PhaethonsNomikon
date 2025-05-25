@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Windows;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 
@@ -183,10 +184,18 @@ public partial class MainArea : MyUserControl
             OnResponseContent = onResponseContent,
         });
         SelectedTabIndex = _rawTabs.Count - 1;
+        MyTabControl.Visibility = Visibility.Visible;
     }
 
-    private void CloseTab(BrowserTabModel tab) => _rawTabs.Remove((AgentListTabModel)tab);
-    
+    private void CloseTab(BrowserTabModel tab)
+    {
+        _rawTabs.Remove((AgentListTabModel)tab);
+        if (_rawTabs.Count == 0)
+        {
+            MyTabControl.Visibility = Visibility.Collapsed;
+        }
+    }
+
     public class AgentListTabModel : BrowserTabModel
     {
         public required IEnumerable<string> ResourceUrlFilters { get; init; }
