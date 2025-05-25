@@ -130,7 +130,7 @@ public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerPro
                     {
                         foreach (JsonProperty prop in root.EnumerateObject())
                         {
-                            values.Add(prop.Name, prop.Value.ToString());
+                            values[prop.Name] = prop.Value.ToString();
                         }
                     }
                     else if (!scopeState.Temporary)

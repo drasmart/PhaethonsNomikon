@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,13 +10,18 @@ using Microsoft.Web.WebView2.Core;
 
 namespace PhaethonsNomikon;
 
-public partial class BrowserTab : UserControl
-{   
-    private readonly ILogger _logger;
+public partial class BrowserTab : MyUserControl
+{
+    private const string AccountPage = "https://www.hoyolab.com/accountCenter";
+    private const string ToLookFor1 = "getGameRecordCard";
+    private const string ToLookFor2 = "https://act.hoyolab.com/app/zzz-game-record/[_a-zA-Z0-9?./=&-]+";
+    private const string UrlFormatLog = "https://act.hoyolab.com/app/zzz-game-record/#/zzz/roles/all?role_id={uid}&server={region}";
+    private const string UrlFormatNav = "https://act.hoyolab.com/app/zzz-game-record/#/zzz/roles/all?role_id={0}&server={1}";
+    private const string ToLookFor3 = "avatar_list";
+    private string? _uid, _region;
     
     public BrowserTab()
     {
-        _logger = ((App)Application.Current).ServiceProvider.GetRequiredService<ILogger<MainWindow>>();
         InitializeComponent();  
         InitializeWebView();
     }
@@ -25,20 +34,105 @@ public partial class BrowserTab : UserControl
         myWebView.CoreWebView2.WebResourceResponseReceived += WebView_WebResourceResponseReceived;
 
         // Navigate to a webpage
-        myWebView.CoreWebView2.Navigate("https://www.hoyolab.com/accountCenter");
+        myWebView.CoreWebView2.Navigate(AccountPage);
     }
 
     private void WebView_WebResourceResponseReceived(object? sender, CoreWebView2WebResourceResponseReceivedEventArgs e)
     {
-        using var _ = _logger.BeginScope("{function}", nameof(WebView_WebResourceResponseReceived));
-        
         var request = e.Request;
         var response = e.Response;
-        
-        using (_logger.BeginScope("{Uri}", request.Uri))
-        using (_logger.BeginScope("{StatusCode}", response.StatusCode))
-        using (_logger.BeginScope("{Headers}", response.Headers))
-            _logger.LogInformation("HTTP Response");
+        var uri = request.Uri;
+
+        using var uriScope = Logger.BeginScope("{StatusCode}", response.StatusCode);
+        Logger.LogDebug("HTTP Response\n{Uri}", uri);
+
+        if (uri.Contains(ToLookFor1))
+        {
+            CheckContent(uri, response, page =>
+            {
+                MatchCollection matches = Regex.Matches(page, ToLookFor2);
+                if (matches.Count > 0)
+                {
+                    foreach (Match match in matches)
+                    {
+                        Logger.LogInformation("Battle Record Link\n{src-Uri}\n{dst-Uri}", uri, match.Value);
+                    }
+                    NavigateToAgentList(page);
+                }
+            });
+        }
+        else if (_uid is { } uid
+                 && _region is { } region
+                 && uri.Contains(uid)
+                 && uri.Contains(region))
+        {
+            CheckContent(uri, response, page =>
+            {
+                if (page.Contains(ToLookFor3))
+                {
+                    HandleAgentsList(page);
+                }
+            });
+        }
+    }
+
+    private async void CheckContent(
+        string uri,
+        CoreWebView2WebResourceResponseView? response,
+        Action<string> onSuccess)
+    {
+        try
+        {
+            Stream content = await response.GetContentAsync();
+            DispatchIfNecessary(() =>
+            {
+                var page = HttpMessageContentToString(content);
+                using (Logger.BeginScope("{http-content}", page))
+                    Logger.LogInformation("HTTP Content\n{Uri}", uri);
+                onSuccess(page);
+            });
+        }
+        catch (System.Runtime.InteropServices.COMException ex)
+        {
+            Logger.LogError(ex, "HTTP Content Error: {StatusCode}", response?.StatusCode);
+        }
+    }
+
+    private void NavigateToAgentList(string page)
+    {
+        var doc = JsonDocument.Parse(page);
+        var list = doc.RootElement
+            .GetProperty("data")
+            .GetProperty("list");
+        var gameCard = list.EnumerateArray()
+            .First(x => x.GetProperty("game_id").GetInt32() == 8);
+        _uid = gameCard.GetProperty("game_role_id").ToString();
+        _region = gameCard.GetProperty("region").ToString();
+        Logger.LogInformation("Agent Page URI\n" + UrlFormatLog, _uid, _region);
+        var newUrl = string.Format(UrlFormatNav, _uid, _region);
+        DispatchIfNecessary(() => myWebView.CoreWebView2.Navigate(newUrl));
+    }
+
+    private void HandleAgentsList(string page)
+    {
+        Logger.LogInformation(nameof(HandleAgentsList));
+        var doc = JsonDocument.Parse(page);
+        var avList = doc.RootElement.GetProperty("data").GetProperty(ToLookFor3);
+        Logger.LogInformation("Found {agent-count} agents", avList.GetArrayLength());
+        foreach (var avatar in avList.EnumerateArray())
+        {
+            using (Logger.BeginScope("{agent-data}", avatar.ToString()))
+                Logger.LogInformation("Agent ID {agent-id}: {agent-name}",
+                    avatar.GetProperty("id").GetInt32(),
+                    avatar.GetProperty("full_name_mi18n").GetString());
+        }
+    }
+    
+    private static string HttpMessageContentToString(Stream content)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        using var reader = new StreamReader(content, Encoding.UTF8, true, 1024, true);
+        return reader.ReadToEnd();
     }
 
 }
