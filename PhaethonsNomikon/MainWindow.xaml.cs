@@ -31,7 +31,8 @@ public partial class MainWindow : Window
     
     private void ToggleLogView_Checked(object sender, RoutedEventArgs e)
     {
-        _logger.LogInformation("Toggle Log View -- {new-state}", true);
+        using var _ = _logger.BeginScope("{function}", nameof(ToggleLogView_Checked));
+        _logger.LogInformation("Toggle Logs -- {new-state}", true);
         if (LogViewBox != null)
         {
             LogViewBox.Visibility = Visibility.Visible;
@@ -47,7 +48,8 @@ public partial class MainWindow : Window
 
     private void ToggleLogView_Unchecked(object sender, RoutedEventArgs e)
     {
-        _logger.LogInformation("Toggle Log View -- {new-state}", false);
+        using var _ = _logger.BeginScope("{function}", nameof(ToggleLogView_Unchecked));
+        _logger.LogInformation("Toggle Logs -- {new-state}", false);
         if (LogViewBox != null)
         {
             _lastLogBoxHeight = LogViewBox.ActualHeight;
