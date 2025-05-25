@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 
@@ -11,8 +10,8 @@ namespace PhaethonsNomikon;
 
 public partial class MainArea : MyUserControl
 {
-    private readonly ObservableCollection<BrowserTabModel> _rawTabs = new();
-    public ReadOnlyObservableCollection<BrowserTabModel> Tabs { get; }
+    private readonly ObservableCollection<AgentListTabModel> _rawTabs = new();
+    public ReadOnlyObservableCollection<AgentListTabModel> Tabs { get; }
     public int SelectedTabIndex { get; set; }
     
     private const string AccountPage = "https://www.hoyolab.com/accountCenter";
@@ -22,22 +21,26 @@ public partial class MainArea : MyUserControl
     private const string ListUrlFormatLog = AgentBaseUrl + "all?role_id={uid}&server={region}";
     private const string ListUrlFormatNav = AgentBaseUrl + "all?role_id={0}&server={1}";
     private const string ToLookFor3 = "avatar_list";
-    private const string AgentUrlFormatLog = AgentBaseUrl + "{agent-id}/detail?role_id={uid}&server={region}";
-    private const string AgentUrlFormatNav = AgentBaseUrl + "{0}/detail?role_id={1}&server={2}";
+    private const string UserIdKey = "role_id";
+    private const string ServerKey = "server";
+    private const string AgentIdsKey = "id_list[]";
+    private const string AgentUrlFormatLog = AgentBaseUrl + "{agent-id}/detail?" + UserIdKey + "={uid}&" + ServerKey + "={region}";
+    private const string AgentUrlFormatNav = AgentBaseUrl + "{0}/detail?" + UserIdKey + "={1}&" + ServerKey + "={2}";
     private string? _uid, _region;
     private bool _isLoadingAgentList;
     
     public MainArea()
     {
-        Tabs = new ReadOnlyObservableCollection<BrowserTabModel>(_rawTabs);
+        Tabs = new ReadOnlyObservableCollection<AgentListTabModel>(_rawTabs);
         InitializeComponent();
-        OpenTab("Hoyolab Account", AccountPage);
+        OpenTab("Hoyolab Account", AccountPage, [ToLookFor1], ReadGameCard);
     }
     
     private void OnWebResourceResponseReceived(
         BrowserTabModel tab,
         CoreWebView2WebResourceResponseReceivedEventArgs e) 
     {
+        var fullTab = (AgentListTabModel)tab;
         var request = e.Request;
         var response = e.Response;
         var uri = request.Uri;
@@ -45,48 +48,58 @@ public partial class MainArea : MyUserControl
         using var uriScope = Logger.BeginScope("{StatusCode}", response.StatusCode);
         Logger.LogDebug("HTTP Response\n{Uri}", uri);
 
-        if (uri.Contains(ToLookFor1))
+        bool filtersPassed = true;
+        foreach (var filter in fullTab.ResourceUrlFilters)
         {
-            CheckContent(uri, response, page =>
+            if (!uri.Contains(filter))
             {
-                MatchCollection matches = Regex.Matches(page, ToLookFor2);
-                if (matches.Count > 0)
-                {
-                    foreach (Match match in matches)
-                    {
-                        Logger.LogInformation("Battle Record Link\n{src-Uri}\n{dst-Uri}", uri, match.Value);
-                    }
-                    NavigateToAgentList(page);
-                    CloseTab(tab);
-                }
-            });
+                filtersPassed = false;
+                break;
+            }
         }
-        else if (_uid is { } uid
-                 && _region is { } region
-                 && uri.Contains(uid)
-                 && uri.Contains(region))
+        if (filtersPassed)
         {
-            CheckContent(uri, response, page =>
-            {
-                if (page.Contains(ToLookFor3))
-                {
-                    var agentRefs = HandleAgentsList(page);
-                    CloseTab(tab);
-                    if (_isLoadingAgentList && agentRefs.Count > 1)
-                    {
-                        _isLoadingAgentList = false;
-                        foreach (var agentRef in agentRefs)
-                        {
-                            Logger.LogInformation("Agent Page URI\n" + AgentUrlFormatLog, agentRef.Id, _uid, _region);
-                            var newUrl = string.Format(AgentUrlFormatNav, agentRef.Id, _uid, _region);
-                            OpenTab(agentRef.Name, newUrl);
-                        }
-                    }
-                }
-            });
+            CheckContent(uri, response, page => fullTab.OnResponseContent(fullTab, uri, page));
         }
     }
-
+    
+    private void ReadGameCard(AgentListTabModel tab, string uri, string page)
+    {
+        MatchCollection matches = Regex.Matches(page, ToLookFor2);
+        if (matches.Count > 0)
+        {
+            foreach (Match match in matches)
+            {
+                Logger.LogInformation("Battle Record Link\n{src-Uri}\n{dst-Uri}", uri, match.Value);
+            }
+            NavigateToAgentList(page);
+            CloseTab(tab);
+        }
+    }
+    
+    private void ReadAgentList(AgentListTabModel tab, string uri, string page)
+    {
+        if (page.Contains(ToLookFor3))
+        {
+            var agentRefs = HandleAgentsList(page);
+            CloseTab(tab);
+            if (_isLoadingAgentList && agentRefs.Count > 1)
+            {
+                _isLoadingAgentList = false;
+                foreach (var agentRef in agentRefs)
+                {
+                    Logger.LogInformation("Agent Page URI\n" + AgentUrlFormatLog, agentRef.Id, _uid, _region);
+                    var newUrl = string.Format(AgentUrlFormatNav, agentRef.Id, _uid, _region);
+                    OpenTab(agentRef.Name, newUrl, [
+                        $"{AgentIdsKey}={agentRef.Id}",
+                        $"{UserIdKey}={_uid}",
+                        $"{ServerKey}={_region}",
+                    ], ReadAgentList);
+                }
+            }
+        }
+    }
+    
     private async void CheckContent(
         string uri,
         CoreWebView2WebResourceResponseView response,
@@ -105,7 +118,7 @@ public partial class MainArea : MyUserControl
         }
         catch (System.Runtime.InteropServices.COMException ex)
         {
-            Logger.LogError(ex, "HTTP Content Error: {StatusCode}", response?.StatusCode);
+            Logger.LogError(ex, "HTTP Content Error: {StatusCode}", response.StatusCode);
         }
     }
 
@@ -122,7 +135,10 @@ public partial class MainArea : MyUserControl
         Logger.LogInformation("Agent Page URI\n" + ListUrlFormatLog, _uid, _region);
         var newUrl = string.Format(ListUrlFormatNav, _uid, _region);
         _isLoadingAgentList = true;
-        OpenTab("Agents List", newUrl);
+        OpenTab("Agents List", newUrl, [
+            $"{UserIdKey}={_uid}",
+            $"{ServerKey}={_region}",
+        ], ReadAgentList);
     }
     
     private record AgentRef(int Id, string Name);
@@ -152,16 +168,28 @@ public partial class MainArea : MyUserControl
         return reader.ReadToEnd();
     }
 
-    private void OpenTab(string name, string url, bool generate = true)
+    private void OpenTab(
+        string name,
+        string url,
+        IEnumerable<string> filters,
+        Action<AgentListTabModel, string, string> onResponseContent)
     {
-        _rawTabs.Add(new BrowserTabModel
+        _rawTabs.Add(new AgentListTabModel
         {
             Header = name,
             Url = url,
             OnResponseReceived = OnWebResourceResponseReceived,
+            ResourceUrlFilters = filters,
+            OnResponseContent = onResponseContent,
         });
         SelectedTabIndex = _rawTabs.Count - 1;
     }
 
-    private void CloseTab(BrowserTabModel tab) => _rawTabs.Remove(tab);
+    private void CloseTab(BrowserTabModel tab) => _rawTabs.Remove((AgentListTabModel)tab);
+    
+    public class AgentListTabModel : BrowserTabModel
+    {
+        public required IEnumerable<string> ResourceUrlFilters { get; init; }
+        public required Action<AgentListTabModel, string, string> OnResponseContent { get; init; }
+    }
 }
