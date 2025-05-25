@@ -15,9 +15,12 @@ public partial class BrowserTab : MyUserControl
     private const string AccountPage = "https://www.hoyolab.com/accountCenter";
     private const string ToLookFor1 = "getGameRecordCard";
     private const string ToLookFor2 = "https://act.hoyolab.com/app/zzz-game-record/[_a-zA-Z0-9?./=&-]+";
-    private const string UrlFormatLog = "https://act.hoyolab.com/app/zzz-game-record/#/zzz/roles/all?role_id={uid}&server={region}";
-    private const string UrlFormatNav = "https://act.hoyolab.com/app/zzz-game-record/#/zzz/roles/all?role_id={0}&server={1}";
+    private const string AgentBaseUrl = "https://act.hoyolab.com/app/zzz-game-record/#/zzz/roles/";
+    private const string ListUrlFormatLog = AgentBaseUrl + "all?role_id={uid}&server={region}";
+    private const string ListUrlFormatNav = AgentBaseUrl + "all?role_id={0}&server={1}";
     private const string ToLookFor3 = "avatar_list";
+    private const string AgentUrlFormatLog = AgentBaseUrl + "{agent-id}/detail?role_id={uid}&server={region}";
+    private const string AgentUrlFormatNav = AgentBaseUrl + "{0}/detail?role_id={1}&server={2}";
     private string? _uid, _region;
     
     public BrowserTab()
@@ -108,8 +111,8 @@ public partial class BrowserTab : MyUserControl
             .First(x => x.GetProperty("game_id").GetInt32() == 8);
         _uid = gameCard.GetProperty("game_role_id").ToString();
         _region = gameCard.GetProperty("region").ToString();
-        Logger.LogInformation("Agent Page URI\n" + UrlFormatLog, _uid, _region);
-        var newUrl = string.Format(UrlFormatNav, _uid, _region);
+        Logger.LogInformation("Agent Page URI\n" + ListUrlFormatLog, _uid, _region);
+        var newUrl = string.Format(ListUrlFormatNav, _uid, _region);
         DispatchIfNecessary(() => myWebView.CoreWebView2.Navigate(newUrl));
     }
 
@@ -119,12 +122,21 @@ public partial class BrowserTab : MyUserControl
         var doc = JsonDocument.Parse(page);
         var avList = doc.RootElement.GetProperty("data").GetProperty(ToLookFor3);
         Logger.LogInformation("Found {agent-count} agents", avList.GetArrayLength());
+        List<int> agentIds = new();
         foreach (var avatar in avList.EnumerateArray())
         {
+            var agentId = avatar.GetProperty("id").GetInt32();
             using (Logger.BeginScope("{agent-data}", avatar.ToString()))
                 Logger.LogInformation("Agent ID {agent-id}: {agent-name}",
-                    avatar.GetProperty("id").GetInt32(),
+                    agentId,
                     avatar.GetProperty("full_name_mi18n").GetString());
+            agentIds.Add(agentId);
+        }
+        if (agentIds.Count > 1)
+        {
+            Logger.LogInformation("Agent Page URI\n" + AgentUrlFormatLog, agentIds[0], _uid, _region);
+            var newUrl = string.Format(AgentUrlFormatNav, agentIds[0], _uid, _region);
+            DispatchIfNecessary(() => myWebView.CoreWebView2.Navigate(newUrl));
         }
     }
     
