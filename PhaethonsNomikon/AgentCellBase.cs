@@ -6,18 +6,26 @@ namespace PhaethonsNomikon;
 
 public class AgentCellBase : MyUserControl
 {
-    public static readonly DependencyProperty RealAgentProperty = DependencyProperty.Register(nameof(RealAgent), typeof(AgentData), typeof(AgentCellBase), new PropertyMetadata(null));
+    public static readonly DependencyProperty RealAgentProperty = DependencyProperty.Register(nameof(RealAgent), typeof(AgentData), typeof(AgentCellBase), new PropertyMetadata(OnRealAgentPropertyChanged));
 
-    public static readonly AgentData DummyAgentData;
+    private static readonly AgentData DummyAgentData;
     public AgentData Agent { get; private set; } = DummyAgentData;
+
+    protected virtual void OnAgentChanged() {}
+    private static void OnRealAgentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is AgentCellBase cell)
+        {
+            cell.Agent = (e.NewValue as AgentData) ?? DummyAgentData;
+            cell.OnAgentChanged();
+        }
+    }
+
 
     public AgentData? RealAgent
     {
         get => (AgentData)GetValue(RealAgentProperty);
-        set {
-            SetValue(RealAgentProperty, value);
-            Agent = RealAgent ?? DummyAgentData;
-        }
+        set => SetValue(RealAgentProperty, value);
     }
     
     static AgentCellBase()
