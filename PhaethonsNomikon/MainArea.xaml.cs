@@ -13,6 +13,8 @@ public partial class MainArea : MyUserControl
 {
     private readonly ObservableCollection<AgentListTabModel> _rawTabs = new();
     public ReadOnlyObservableCollection<AgentListTabModel> Tabs { get; }
+    private readonly ObservableCollection<AgentData> _rawAgents = new();
+    public ReadOnlyObservableCollection<AgentData> Agents { get; }
     public int SelectedTabIndex { get; set; }
     
     private const string AccountPage = "https://www.hoyolab.com/accountCenter";
@@ -33,6 +35,7 @@ public partial class MainArea : MyUserControl
     public MainArea()
     {
         Tabs = new ReadOnlyObservableCollection<AgentListTabModel>(_rawTabs);
+        Agents = new ReadOnlyObservableCollection<AgentData>(_rawAgents);
         InitializeComponent();
         OpenTab("Hoyolab Account", AccountPage, [ToLookFor1], ReadGameCard);
     }
@@ -149,7 +152,8 @@ public partial class MainArea : MyUserControl
         Logger.LogInformation(nameof(HandleAgentsList));
         var doc = JsonDocument.Parse(page);
         var avList = doc.RootElement.GetProperty("data").GetProperty(ToLookFor3);
-        Logger.LogInformation("Found {agent-count} agents", avList.GetArrayLength());
+        var agentsCount = avList.GetArrayLength();
+        Logger.LogInformation("Found {agent-count} agents", agentsCount);
         List<AgentRef> agentRefs = new();
         foreach (var avatar in avList.EnumerateArray())
         {
@@ -158,6 +162,13 @@ public partial class MainArea : MyUserControl
             using (Logger.BeginScope("{agent-data}", avatar.ToString()))
                 Logger.LogInformation("Agent ID {agent-id}: {agent-name}", agentId, agentName);
             agentRefs.Add(new AgentRef(agentId, agentName ?? $"Agent #{agentId}"));
+            if (agentsCount == 1 && page.Contains("equip_plan_info"))
+            {
+                if (AgentData.FromJson(avatar, Logger) is { } agentData)
+                {
+                    _rawAgents.Add(agentData);
+                }
+            }
         }
         return agentRefs;
     }
