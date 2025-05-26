@@ -12,17 +12,17 @@ namespace PhaethonsNomikon;
 
 public partial class BrowserTab : MyUserControl
 {
-    public static readonly DependencyProperty MyTextProperty =
+    public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register(nameof(Model), typeof(BrowserTabModel), typeof(BrowserTab), new PropertyMetadata(null));
 
     private bool _isReadyToLoad;
     
     public BrowserTabModel? Model
     {
-        get => (BrowserTabModel)GetValue(MyTextProperty);
+        get => (BrowserTabModel)GetValue(ModelProperty);
         set
         {
-            SetValue(MyTextProperty, value);
+            SetValue(ModelProperty, value);
             if (Model is not null)
             {
                 lock (myWebView)

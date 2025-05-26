@@ -86,7 +86,7 @@ public class AgentData
                 : $"{Name} ({Rarity}) lvl.{Level}";
     }
 
-    public static AgentData? FromJson(JsonElement json, ILogger logger)
+    public static AgentData? FromJson(JsonElement json, ILogger? logger)
     {
         var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         var result = json.Deserialize<AgentData>(options);
@@ -100,7 +100,7 @@ public class AgentData
         {
             result.PreferredStats = propertyList.Deserialize<List<PreferredProperty>>(options);
         }
-        else
+        else if (logger is not null)
         {
             using (logger.BeginScope("{json}", json))
                 logger.LogWarning("Failed to get preferred properties for {agent-name}", result?.FullNameUs);
