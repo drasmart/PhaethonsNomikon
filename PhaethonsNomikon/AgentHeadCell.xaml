@@ -7,14 +7,7 @@
                      mc:Ignorable="d"
                      d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/> <!-- Log Controls -->
-            <RowDefinition Height="20"/> <!-- Log View -->
-        </Grid.RowDefinitions>
-        <Image Grid.Row="0" Stretch="Uniform"
+        <Image Stretch="Uniform"
                Source="{Binding Agent.IconUrl, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}}" />
-        <TextBlock Grid.Row="1" 
-                   HorizontalAlignment="Center"
-                   Text="{Binding Agent.FullName, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}}" />
     </Grid>
 </local:AgentCellBase>

@@ -6,7 +6,29 @@
                      xmlns:local="clr-namespace:PhaethonsNomikon"
                      mc:Ignorable="d"
                      d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Margin="0,0,0,2"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center">
+            <TextBlock Margin="0,0,3,0" 
+                       Text="{Binding Agent.FullName, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}, FallbackValue=None}" />
+            <TextBlock Margin="0,0,3,0" 
+                       Text="{Binding Agent.Rank, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}, FallbackValue=?, StringFormat='M{0}'}" >
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Agent.Rank, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}, FallbackValue={x:Null}}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Margin="0,0,3,0" 
+                       Text="{Binding Agent.Rarity, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}, FallbackValue=?, StringFormat='({0})'}" />
+            <TextBlock Text="{Binding Agent.Level, RelativeSource={RelativeSource AncestorType=local:AgentCellBase}, FallbackValue=?, StringFormat='lvl. {0}'}" />
+        </StackPanel>
         <ItemsControl ItemsSource="{Binding Stats, RelativeSource={RelativeSource AncestorType=local:AgentStatsCell}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -41,5 +63,5 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </Grid>
+    </StackPanel>
 </local:AgentCellBase>

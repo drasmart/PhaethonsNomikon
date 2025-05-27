@@ -10,11 +10,11 @@
         <StackPanel Orientation="Vertical">
             <Image Stretch="Uniform"
                    Source="{Binding Item.IconUrl, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue={x:Null}}" />
+            <TextBlock HorizontalAlignment="Center"
+                       Text="{Binding Item.Name, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=None}" />
             <StackPanel Margin="0,0,0,2"
                         Orientation="Horizontal" 
                         HorizontalAlignment="Center">
-                <TextBlock Margin="0,0,3,0" 
-                           Text="{Binding Item.Name, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=None}" />
                 <TextBlock Margin="0,0,3,0" 
                            Text="{Binding Item.Star, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=?, StringFormat='P{0}'}" >
                     <TextBlock.Style>

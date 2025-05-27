@@ -16,6 +16,7 @@
 
         <TextBlock Grid.Row="0" Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
         <ListView Grid.Row="1"
+                  ScrollViewer.CanContentScroll="False"
                   ItemsSource="{Binding Agents, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -24,21 +25,21 @@
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView AllowsColumnReorder="true">
-                    <GridViewColumn Width="90" Header="Agent" >
+                    <GridViewColumn Width="90" Header="Icon" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:AgentHeadCell RealAgent="{Binding}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="400" Header="Agent" >
+                    <GridViewColumn Width="400" Header="Agent Stats" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:AgentStatsCell RealAgent="{Binding}" Columns="2"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="W-Engine" >
+                    <GridViewColumn Width="165" Header="W-Engine" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
@@ -46,7 +47,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="Disk 1" >
+                    <GridViewColumn Width="165" Header="Disk 1" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
@@ -54,7 +55,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="Disk 2" >
+                    <GridViewColumn Width="165" Header="Disk 2" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
@@ -62,7 +63,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="Disk 3" >
+                    <GridViewColumn Width="165" Header="Disk 3" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
@@ -70,7 +71,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="Disk 4" >
+                    <GridViewColumn Width="165" Header="Disk 4" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
@@ -78,7 +79,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="Disk 5" >
+                    <GridViewColumn Width="165" Header="Disk 5" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
@@ -86,7 +87,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="160" Header="Disk 6" >
+                    <GridViewColumn Width="165" Header="Disk 6" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"

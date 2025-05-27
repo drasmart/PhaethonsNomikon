@@ -209,6 +209,7 @@ public partial class MainArea : MyUserControl
             MyTabControl.Visibility = Visibility.Collapsed;
             MainGrid.RowDefinitions[2].Height =  new GridLength(0);
         }
+        MyTabControl.SelectedIndex = 0;
     }
 
     public class AgentListTabModel : BrowserTabModel
