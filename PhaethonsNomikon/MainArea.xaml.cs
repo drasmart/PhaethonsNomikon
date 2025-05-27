@@ -13,8 +13,10 @@ public partial class MainArea : MyUserControl
 {
     private readonly ObservableCollection<AgentListTabModel> _rawTabs = new();
     public ReadOnlyObservableCollection<AgentListTabModel> Tabs { get; }
+    
     private readonly ObservableCollection<AgentData> _rawAgents = new();
     public ReadOnlyObservableCollection<AgentData> Agents { get; }
+    
     public int SelectedTabIndex { get; set; }
     
     private const string AccountPage = "https://www.hoyolab.com/accountCenter";
@@ -196,6 +198,7 @@ public partial class MainArea : MyUserControl
         });
         SelectedTabIndex = _rawTabs.Count - 1;
         MyTabControl.Visibility = Visibility.Visible;
+        MainGrid.RowDefinitions[2].Height =  new GridLength(1, GridUnitType.Star);
     }
 
     private void CloseTab(BrowserTabModel tab)
@@ -204,6 +207,7 @@ public partial class MainArea : MyUserControl
         if (_rawTabs.Count == 0)
         {
             MyTabControl.Visibility = Visibility.Collapsed;
+            MainGrid.RowDefinitions[2].Height =  new GridLength(0);
         }
     }
 

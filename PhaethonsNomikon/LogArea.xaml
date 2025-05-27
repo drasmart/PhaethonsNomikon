@@ -33,30 +33,9 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-
-                            <!-- <TextBlock Text="entry" /> -->
-                            <!-- <ListView ItemsSource="{Binding Values}"> -->
-                            <!--     <ListView.View> -->
-                            <!--         <GridView> -->
-                            <!--             <TextBlock Text="{Binding Key}" /> -->
-                            <!--             <TextBlock Text="{Binding Value}" /> -->
-                            <!--         </GridView> -->
-                            <!--     </ListView.View> -->
-                            <!-- </ListView> -->
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>
-                    <!-- <TextBlock Text="{Binding Message}" /> -->
-                    <!-- <ListBox ItemsSource="{Binding Values}" Background="Orange"> -->
-                    <!--     <ListBox.ItemTemplate> -->
-                    <!--         <DataTemplate> -->
-                    <!--             <StackPanel Orientation="Horizontal"> -->
-                    <!--                 <TextBlock Text="{Binding Key}" /> -->
-                    <!--                 <TextBlock Text="{Binding Value}" /> -->
-                    <!--             </StackPanel> -->
-                    <!--         </DataTemplate> -->
-                    <!--     </ListBox.ItemTemplate> -->
-                    <!-- </ListBox> -->
             </GridView>
         </ListView.View>
     </ListView>

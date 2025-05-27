@@ -7,18 +7,101 @@
                      mc:Ignorable="d"
                      d:DesignHeight="300" d:DesignWidth="300">
     
-    <Grid Background="Pink">
+    <Grid x:Name="MainGrid" Background="Pink">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/> <!-- Log Controls -->
-            <RowDefinition Height="*"/> <!-- Log View -->
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding Agents, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="VerticalContentAlignment" Value="Top"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView AllowsColumnReorder="true">
+                    <GridViewColumn Width="90" Header="Agent" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:AgentHeadCell RealAgent="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="400" Header="Agent" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:AgentStatsCell RealAgent="{Binding}" Columns="2"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="W-Engine" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Weapon, RelativeSource={RelativeSource Self}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="Disk 1" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Equipment[0], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="Disk 2" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Equipment[1], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="Disk 3" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Equipment[2], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="Disk 4" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Equipment[3], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="Disk 5" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Equipment[4], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="160" Header="Disk 6" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:ItemCell RealAgent="{Binding}"
+                                                Item="{Binding Agent.Equipment[5], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
         <TabControl
             x:Name="MyTabControl"
-            Grid.Row="1"
-            ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}, Path=Tabs}"
-            SelectedIndex="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}, Path=SelectedTabIndex, Mode=TwoWay}"
+            Grid.Row="2"
+            ItemsSource="{Binding Tabs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"
+            SelectedIndex="{Binding SelectedTabIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}, Mode=TwoWay}"
             VirtualizingStackPanel.IsVirtualizing="False">
             <TabControl.ItemTemplate>
                 <DataTemplate>

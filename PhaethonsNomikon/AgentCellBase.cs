@@ -8,7 +8,7 @@ public class AgentCellBase : MyUserControl
 {
     public static readonly DependencyProperty RealAgentProperty = DependencyProperty.Register(nameof(RealAgent), typeof(AgentData), typeof(AgentCellBase), new PropertyMetadata(OnRealAgentPropertyChanged));
 
-    private static readonly AgentData DummyAgentData;
+    internal static readonly AgentData DummyAgentData;
     public AgentData Agent { get; private set; } = DummyAgentData;
 
     protected virtual void OnAgentChanged() {}

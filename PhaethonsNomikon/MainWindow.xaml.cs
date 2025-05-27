@@ -27,6 +27,7 @@ public partial class MainWindow : Window
         _logger = ((App)Application.Current).ServiceProvider.GetRequiredService<ILogger<MainWindow>>();
         InitializeComponent();
         _logBoxMinHeight = LogContainer.RowDefinitions[2].MinHeight;
+        ToggleLogView.IsChecked = false;
     }
     
     private void ToggleLogView_Checked(object sender, RoutedEventArgs e)
