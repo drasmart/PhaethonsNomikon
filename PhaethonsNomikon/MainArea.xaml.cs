@@ -146,8 +146,6 @@ public partial class MainArea : MyUserControl
             $"{ServerKey}={_region}",
         ], ReadAgentList);
     }
-    
-    private record AgentRef(int Id, string Name);
 
     private List<AgentRef> HandleAgentsList(string page)
     {
