@@ -16,6 +16,7 @@
 
         <TextBlock Grid.Row="0" Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
         <ListView Grid.Row="1"
+                  x:Name="MainListView"
                   ScrollViewer.CanContentScroll="False"
                   ItemsSource="{Binding Agents, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}">
             <ListView.ItemContainerStyle>

@@ -49,6 +49,22 @@ public partial class MainWindow : Window
             LogContainer.RowDefinitions[2].Height = new GridLength(_lastLogBoxHeight);
         }
     }
+    
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        if (LogViewBox != null && ToggleLogView.IsChecked == true)
+        {
+            MyUserControl.SaveFullListViewAsImage(LogViewBox.LogList, "logs.png", "Save logs as PNG");
+        }
+    }
+    
+    private void Button2_Click(object sender, RoutedEventArgs e)
+    {
+        if (LogViewBox != null)
+        {
+            MyUserControl.SaveFullListViewAsImage(FirstMainArea.MainListView, "agents.png", "Save agents list as PNG");
+        }
+    }
 
     private void ToggleLogView_Unchecked(object sender, RoutedEventArgs e)
     {

@@ -14,6 +14,12 @@
                 <ToggleButton x:Name="ToggleLogView" Content="Show Logs" IsChecked="True"
                               Checked="ToggleLogView_Checked" Unchecked="ToggleLogView_Unchecked"/>
             </StatusBarItem>
+            <StatusBarItem>
+                <Button Content="Save Logs" Click="Button_Click"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button Content="Save Equip Image" Click="Button2_Click"/>
+            </StatusBarItem>
 
             <StatusBarItem>
                 <TextBlock Text="Ready" />
@@ -30,7 +36,9 @@
             </Grid.RowDefinitions>
 
             <!-- Main Content -->
-            <local:MainArea Grid.Row="0" RealDocument="{Binding Document, RelativeSource={RelativeSource AncestorType=local:MainWindow, AncestorLevel=1}}" />
+            <local:MainArea Grid.Row="0"
+                            x:Name="FirstMainArea"
+                            RealDocument="{Binding Document, RelativeSource={RelativeSource AncestorType=local:MainWindow, AncestorLevel=1}}" />
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
             <local:LogArea Grid.Row="2" x:Name="LogViewBox" />
         </Grid>
