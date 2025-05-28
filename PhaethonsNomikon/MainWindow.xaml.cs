@@ -22,11 +22,12 @@ public partial class MainWindow : Window
     private double _lastLogBoxHeight;
     private readonly ILogger _logger;
 
-    public SaveDocument Document { get; set; } = new(true);
+    public SaveDocument Document { get; set; }
     
     public MainWindow()
     {
         _logger = ((App)Application.Current).ServiceProvider.GetRequiredService<ILogger<MainWindow>>();
+        Document = SaveDocument.Open() ?? new(true);
         InitializeComponent();
         _logBoxMinHeight = LogContainer.RowDefinitions[2].MinHeight;
         ToggleLogView.IsChecked = false;

@@ -36,7 +36,7 @@ public partial class MainArea : MyUserControl
     private string? _uid, _region;
     private bool _isLoadingAgentList;
 
-    private SaveDocument Document { get; set; } = new(false);
+    private SaveDocument Document { get; } = new(false);
     public SaveDocument? RealDocument
     {
         get => (SaveDocument)GetValue(RealDocumentProperty);
@@ -66,6 +66,12 @@ public partial class MainArea : MyUserControl
             if (doc.ShouldLoad)
             {
                 area.OpenAccountTab();
+                return;
+            }
+            area._rawAgents.Clear();
+            foreach (var nextAgent in doc.Content.AgentsData)
+            {
+                area._rawAgents.Add(nextAgent);
             }
         }
     }

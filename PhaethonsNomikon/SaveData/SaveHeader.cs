@@ -3,5 +3,5 @@
 [Serializable]
 public class SaveHeader
 {
-    public int Version { get; set; }
+    public int Version { get; set; } = 1;
 }

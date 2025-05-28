@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using Microsoft.Win32;
 using PhaethonsNomikon.SaveData;
 
@@ -23,6 +24,7 @@ public class SaveDocument
     {
         FilePath = filePath;
         Content = SaveHelper.Load(filePath);
+        HasLoaded = true;
     }
     
     private const string Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
@@ -36,10 +38,11 @@ public class SaveDocument
         }
         if (string.IsNullOrWhiteSpace(FilePath))
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = Filter;
-            saveFileDialog1.Title = "Save " + Title;
-        
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = Filter,
+                Title = "Save " + Title
+            };
             if (saveFileDialog1.ShowDialog() == true)
             {
                 FilePath = saveFileDialog1.FileName;
@@ -49,5 +52,17 @@ public class SaveDocument
         {
             SaveHelper.Save(FilePath, Content);
         }
+    }
+    
+    public static SaveDocument? Open()
+    {
+        OpenFileDialog openFileDialog = new OpenFileDialog
+        {
+            Filter = Filter,
+            Title = "Open " + Title,
+        };
+        return openFileDialog.ShowDialog() == true
+            ? new SaveDocument(openFileDialog.FileName)
+            : null;
     }
 }
