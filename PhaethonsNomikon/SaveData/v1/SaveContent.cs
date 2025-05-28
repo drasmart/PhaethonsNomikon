@@ -15,7 +15,7 @@ public class SaveContent : SaveHeader
 
     public RawData RawResponses { get; set; } = new();
     
-    public int Uid { get; set; }
+    public string? Uid { get; set; }
     public string? Server { get; set; }
     public List<AgentRef> AgentsList { get; set; } = new();
     public List<AgentData> AgentsData { get; set; } = new();

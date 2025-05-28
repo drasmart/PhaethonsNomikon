@@ -159,13 +159,14 @@ public partial class MainArea : MyUserControl
     private void NavigateToAgentList(string page)
     {
         var doc = JsonDocument.Parse(page);
+        Document.Content.RawResponses.GameCard = doc.RootElement;
         var list = doc.RootElement
             .GetProperty("data")
             .GetProperty("list");
         var gameCard = list.EnumerateArray()
             .First(x => x.GetProperty("game_id").GetInt32() == 8);
-        _uid = gameCard.GetProperty("game_role_id").ToString();
-        _region = gameCard.GetProperty("region").ToString();
+        Document.Content.Uid = _uid = gameCard.GetProperty("game_role_id").ToString();
+        Document.Content.Server = _region = gameCard.GetProperty("region").ToString();
         Logger.LogInformation("Agent Page URI\n" + ListUrlFormatLog, _uid, _region);
         var newUrl = string.Format(ListUrlFormatNav, _uid, _region);
         _isLoadingAgentList = true;
@@ -183,18 +184,33 @@ public partial class MainArea : MyUserControl
         var agentsCount = avList.GetArrayLength();
         Logger.LogInformation("Found {agent-count} agents", agentsCount);
         List<AgentRef> agentRefs = new();
+        bool isAvatarList = avList.GetArrayLength() > 1; 
+        if (isAvatarList)
+        {
+            Document.Content.RawResponses.AgentList = doc.RootElement;
+        }
+        else
+        {
+            Document.Content.RawResponses.AgentData.Add(doc.RootElement);
+        }
         foreach (var avatar in avList.EnumerateArray())
         {
             var agentId = avatar.GetProperty("id").GetInt32();
             var agentName = avatar.GetProperty("full_name_mi18n").GetString();
             using (Logger.BeginScope("{agent-data}", avatar.ToString()))
                 Logger.LogInformation("Agent ID {agent-id}: {agent-name}", agentId, agentName);
-            agentRefs.Add(new AgentRef(agentId, agentName ?? $"Agent #{agentId}"));
+            var agentRef = new AgentRef(agentId, agentName ?? $"Agent #{agentId}");
+            agentRefs.Add(agentRef);
+            if (isAvatarList)
+            {
+                Document.Content.AgentsList.Add(agentRef);
+            }
             if (agentsCount == 1 && page.Contains("equip_plan_info"))
             {
                 if (AgentData.FromJson(avatar, Logger) is { } agentData)
                 {
                     _rawAgents.Add(agentData);
+                    Document.Content.AgentsData.Add(agentData);
                 }
             }
         }
@@ -237,6 +253,11 @@ public partial class MainArea : MyUserControl
         {
             MyTabControl.Visibility = Visibility.Collapsed;
             MainGrid.RowDefinitions[2].Height =  new GridLength(0);
+            if (_rawAgents.Count > 0)
+            {
+                Document.HasLoaded = true;
+                Document.Save();
+            }
         }
         MyTabControl.SelectedIndex = 0;
     }

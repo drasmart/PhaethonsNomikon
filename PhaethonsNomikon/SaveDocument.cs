@@ -10,7 +10,7 @@ using Content = SaveData.v1.SaveContent;
 public class SaveDocument
 {
     public string? FilePath { get; set; }
-    public Content? Content { get; set; }
+    public Content Content { get; set; } = new();
     public bool ShouldLoad { get; set; }
     public bool HasLoaded { get; set; }
 
@@ -24,18 +24,21 @@ public class SaveDocument
         FilePath = filePath;
         Content = SaveHelper.Load(filePath);
     }
+    
+    private const string Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+    private const string Title = "Agents Json File";
 
     public void Save()
     {
-        if (Content is null || !HasLoaded)
+        if (!HasLoaded)
         {
             return;
         }
         if (string.IsNullOrWhiteSpace(FilePath))
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-            saveFileDialog1.Title = "Save a Text File";
+            saveFileDialog1.Filter = Filter;
+            saveFileDialog1.Title = "Save " + Title;
         
             if (saveFileDialog1.ShowDialog() == true)
             {

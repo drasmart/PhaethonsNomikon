@@ -22,7 +22,7 @@ public partial class MainWindow : Window
     private double _lastLogBoxHeight;
     private readonly ILogger _logger;
 
-    public SaveDocument Document { get; set; } = new(false);
+    public SaveDocument Document { get; set; } = new(true);
     
     public MainWindow()
     {
