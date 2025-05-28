@@ -21,6 +21,8 @@ public partial class MainWindow : Window
     private readonly double _logBoxMinHeight;
     private double _lastLogBoxHeight;
     private readonly ILogger _logger;
+
+    public SaveDocument Document { get; set; } = new(false);
     
     public MainWindow()
     {

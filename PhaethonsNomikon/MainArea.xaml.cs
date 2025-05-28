@@ -11,6 +11,8 @@ namespace PhaethonsNomikon;
 
 public partial class MainArea : MyUserControl
 {
+    public static readonly DependencyProperty RealDocumentProperty = DependencyProperty.Register(nameof(RealDocument), typeof(SaveDocument), typeof(MainArea), new PropertyMetadata(OnRealDocumentPropertyChanged));
+    
     private readonly ObservableCollection<AgentListTabModel> _rawTabs = new();
     public ReadOnlyObservableCollection<AgentListTabModel> Tabs { get; }
     
@@ -33,13 +35,39 @@ public partial class MainArea : MyUserControl
     private const string AgentUrlFormatNav = AgentBaseUrl + "{0}/detail?" + UserIdKey + "={1}&" + ServerKey + "={2}";
     private string? _uid, _region;
     private bool _isLoadingAgentList;
+
+    private SaveDocument Document { get; set; } = new(false);
+    public SaveDocument? RealDocument
+    {
+        get => (SaveDocument)GetValue(RealDocumentProperty);
+        set => SetValue(RealDocumentProperty, value);
+    }
     
     public MainArea()
     {
         Tabs = new ReadOnlyObservableCollection<AgentListTabModel>(_rawTabs);
         Agents = new ReadOnlyObservableCollection<AgentData>(_rawAgents);
         InitializeComponent();
-        OpenTab("Hoyolab Account", AccountPage, [ToLookFor1], ReadGameCard);
+        if (!Document.ShouldLoad && _rawTabs.Count == 0)
+        {
+            CloseTab(null);
+        }
+    }
+
+    private void OpenAccountTab() => OpenTab("Hoyolab Account", AccountPage, [ToLookFor1], ReadGameCard);
+    
+    
+    private static void OnRealDocumentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is MainArea area)
+        {
+            var doc = (e.NewValue as SaveDocument) ?? new SaveDocument(false);
+            area.RealDocument = doc;
+            if (doc.ShouldLoad)
+            {
+                area.OpenAccountTab();
+            }
+        }
     }
     
     private void OnWebResourceResponseReceived(
@@ -199,9 +227,12 @@ public partial class MainArea : MyUserControl
         MainGrid.RowDefinitions[2].Height =  new GridLength(1, GridUnitType.Star);
     }
 
-    private void CloseTab(BrowserTabModel tab)
+    private void CloseTab(AgentListTabModel? tab)
     {
-        _rawTabs.Remove((AgentListTabModel)tab);
+        if (tab != null)
+        {
+            _rawTabs.Remove(tab);
+        }
         if (_rawTabs.Count == 0)
         {
             MyTabControl.Visibility = Visibility.Collapsed;
