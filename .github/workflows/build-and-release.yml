@@ -13,9 +13,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.2.1
+        with:
+          versionSpec: '6.3.x'
+
       - name: Run GitVersion
         id: gitversion
-        uses: GitTools/actions/gitversion/execute@v1
+        uses: GitTools/actions/gitversion/execute@v3.2.1
 
   build:
     runs-on: ubuntu-latest
