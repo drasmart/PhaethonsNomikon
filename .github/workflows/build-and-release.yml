@@ -23,7 +23,7 @@ jobs:
         uses: GitTools/actions/gitversion/execute@v3.2.1
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: version
     steps:
       - name: Checkout repository
@@ -41,8 +41,7 @@ jobs:
         run: dotnet publish -c Release /p:Version=${{ needs.version.outputs.version }} -o output
 
       - name: Create ZIP archive
-        run: |
-          zip -r PhaethonsNomikon-${{ needs.version.outputs.version }}.zip output/
+        run: Compress-Archive -Path output\* -DestinationPath my-app-${{ needs.version.outputs.version }}.zip
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
