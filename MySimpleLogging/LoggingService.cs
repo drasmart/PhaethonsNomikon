@@ -8,7 +8,13 @@ public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerPro
 {
     private static readonly ObservableCollection<LogEntry> RawLogs = new();
     public static readonly ReadOnlyObservableCollection<LogEntry> Logs = new(RawLogs);
+    public static readonly ObservableCollection<string> LastMessage = new();
     private static readonly AsyncLocal<List<ScopeState>> Scopes = new();
+
+    static LoggingService()
+    {
+        LastMessage.Add(string.Empty);
+    }
 
     public static void ClearLogs() => RawLogs.Clear();
     
@@ -58,6 +64,7 @@ public sealed class LoggingService(Func<DateTime> dateTimeProvider) : ILoggerPro
             lock (RawLogs)
             {
                 RawLogs.Add(newEntry);
+                LastMessage[0] = newEntry.Message ?? "[??]";
             }
         }
 
