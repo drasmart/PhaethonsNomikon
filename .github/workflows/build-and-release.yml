@@ -1,0 +1,70 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gitversion.outputs.FullSemVer }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install GitVersion
+        uses: GitTools/actions/gitversion/setup@v1
+        with:
+          version: 5.x
+
+      - name: Run GitVersion
+        id: gitversion
+        uses: GitTools/actions/gitversion/execute@v1
+
+  build:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish project
+        run: dotnet publish -c Release /p:Version=${{ needs.version.outputs.version }} -o output
+
+      - name: Create ZIP archive
+        run: |
+          zip -r PhaethonsNomikon-${{ needs.version.outputs.version }}.zip output/
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
+          tag: v${{ needs.version.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: PhaethonsNomikon
+          path: output
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: output/*
+          tag: v${{ needs.version.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
