@@ -41,7 +41,7 @@ jobs:
         run: dotnet publish -c Release /p:Version=${{ needs.version.outputs.version }} -o output
 
       - name: Create ZIP archive
-        run: Compress-Archive -Path output\* -DestinationPath my-app-${{ needs.version.outputs.version }}.zip
+        run: Compress-Archive -Path output\* -DestinationPath PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
