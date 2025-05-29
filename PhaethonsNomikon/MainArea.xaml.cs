@@ -54,7 +54,11 @@ public partial class MainArea : MyUserControl
         }
     }
 
-    private void OpenAccountTab() => OpenTab("Hoyolab Account", AccountPage, [ToLookFor1], ReadGameCard);
+    private void OpenAccountTab()
+    {
+        Logger.LogInformation("Opening Hoyolab account page... Login/restart may be required.");
+        OpenTab("Hoyolab Account", AccountPage, [ToLookFor1], ReadGameCard);
+    }
     
     
     private static void OnRealDocumentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -262,6 +266,7 @@ public partial class MainArea : MyUserControl
             if (_rawAgents.Count > 0)
             {
                 Document.HasLoaded = true;
+                Logger.LogInformation("Collected data on {agents-count} agents", _rawAgents.Count);
                 Document.Save();
             }
         }
