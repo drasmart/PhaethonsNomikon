@@ -25,6 +25,26 @@ public class AgentData
     public Item? Weapon { get; set; }
     [JsonPropertyName("equip")]
     public List<Item?>? Equipment { get; set; }
+    public List<SkillRow>? Skills { get; set; }
+
+    [Serializable]
+    public class SubSkill
+    {
+        public string? Title { get; set; }
+        public string? Text { get; set; }
+    }
+
+    [Serializable]
+    public class SkillRow
+    {
+        public int? Level { get; set; }
+        [JsonPropertyName("items")]
+        public List<SubSkill> SubSkills { get; set; } = new();
+        
+        public string Name => (SubSkills.FirstOrDefault()?.Title ?? "").Split(":")[0];
+
+        public override string ToString() => $"{Name} -- lvl. {Level}";
+    }
 
     [Serializable]
     public class ItemProperty

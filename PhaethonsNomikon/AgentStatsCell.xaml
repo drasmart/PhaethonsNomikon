@@ -63,5 +63,16 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <StackPanel Orientation="Vertical">
+            <TextBlock Margin="30,7"
+                       Text="Skills"/>
+            <ItemsControl ItemsSource="{Binding Agent.Skills, RelativeSource={RelativeSource AncestorType=local:AgentStatsCell}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
     </StackPanel>
 </local:AgentCellBase>
