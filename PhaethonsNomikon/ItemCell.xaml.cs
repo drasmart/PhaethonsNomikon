@@ -53,11 +53,13 @@ public partial class ItemCell : AgentCellBase
             p.ToString(),
             (agent.PreferredStats?.Any(x => x.FullName == p.Name) == true)
             || PreferredOverrides.Contains(p.Name),
-            p.Level is {} level and > 1 ? level : 1));
+            GetLevel(p)));
         if (item.Star is null)
         {
-            int evaluation = Stats.Skip(1).Aggregate(0, (i, row) => i + (row.Preferred ? row.Level : 0));
-            ApplyEvaluation(evaluation);
+            int evaluation = item.Rarity == "S"
+                ? Stats.Skip(1).Aggregate(0, (i, row) => i + (row.Preferred ? row.Level : 0))
+                : -1;
+            ApplyEvaluation(evaluation, item is { Rarity: "S", Level: < 15 });
         }
         else
         {
@@ -65,25 +67,59 @@ public partial class ItemCell : AgentCellBase
         }
     }
 
-    private void ApplyEvaluation(int evaluation)
+    private static int GetLevel(AgentData.ItemProperty itemProperty)
     {
-        (string, Brush, double) settings = evaluation switch
+        if (itemProperty.Level is { } level and >= 1)
         {
-            0 => ("F", Brushes.Magenta, 80),
-            1 => ("E", Brushes.OrangeRed, 80),
-            2 => ("D", Brushes.DeepSkyBlue, 80),
-            3 => ("C", Brushes.ForestGreen, 80),
-            4 => ("B", Brushes.LimeGreen, 80),
-            5 => ("A", Brushes.Yellow, 80),
-            6 => ("S", Brushes.Orange, 80),
-            7 => ("SS", Brushes.Orange, 56),
-            8 => ("SSS", Brushes.Orange, 36),
-            9 => ("GOD", Brushes.Gold, 36),
-            _ => ("GOD+", Brushes.Gold, 28),
+            return level;
+        }
+        bool isPercent = (itemProperty.Base ?? "").Contains('%');
+        string rawValue = (itemProperty.Base ?? "").Replace("%", "");
+        double valueNum = double.Parse(rawValue);
+        double? singleRoll = (itemProperty.Name ?? "", isPercent) switch
+        {
+            ("HP", true) => 3, 
+            ("HP", false) => 112,
+            ("ATK", true) => 3, 
+            ("ATK", false) => 19, 
+            ("DEF", true) => 4.8, 
+            ("DEF", false) => 15, 
+            ("PEN", _) => 9, 
+            ("CRIT Rate", _) => 2.4, 
+            ("CRIT DMG", _) => 4.8, 
+            ("Anomaly Proficiency", _) => 9, 
+            _ => null,
         };
-        EvaluationLetter = settings.Item1;
+        return (singleRoll is { } rollValue) ? (int)Math.Round(valueNum / rollValue) : 1;
+    }
+
+    private void ApplyEvaluation(int evaluation, bool canUpgrade)
+    {
+        (string, Brush) settings = evaluation switch
+        {
+            -1 => ("XXX", Brushes.Pink),
+            0 => ("F", Brushes.Magenta),
+            1 => ("E", Brushes.OrangeRed),
+            2 => ("D", Brushes.DeepSkyBlue),
+            3 => ("C", Brushes.ForestGreen),
+            4 => ("B", Brushes.LimeGreen),
+            5 => ("A", Brushes.Yellow),
+            6 => ("S", Brushes.Orange),
+            7 => ("SS", Brushes.Orange),
+            8 => ("SSS", Brushes.Orange),
+            9 => ("GOD", Brushes.Gold),
+            _ => ("?", Brushes.Pink),
+        };
+        int size = (settings.Item1.Length + (canUpgrade ? 1 : 0)) switch
+        {
+            1 => 80,
+            2 => 56,
+            3 => 36,
+            _ => 28,
+        };
+        EvaluationLetter = settings.Item1 + (canUpgrade ? "+" : "");
         EvaluationColor = settings.Item2;
-        EvaluationFontSize = settings.Item3;
+        EvaluationFontSize = size;
     }
 
     public ItemCell()
