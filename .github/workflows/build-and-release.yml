@@ -37,15 +37,23 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Publish project
+      - name: Publish project (minimal)
         run: dotnet publish ./PhaethonsNomikon/PhaethonsNomikon.csproj -c Release /p:Version=${{ needs.version.outputs.version }} -o output
 
-      - name: Create ZIP archive
+      - name: Create ZIP archive (minimal)
         run: Compress-Archive -Path output\* -DestinationPath PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
+
+      - name: Publish project (self-contained)
+        run: dotnet publish ./PhaethonsNomikon/PhaethonsNomikon.csproj -c Release /p:Version=${{ needs.version.outputs.version }} -o output-sc
+
+      - name: Create ZIP archive (self-contained)
+        run: Compress-Archive -Path output-sc\* -DestinationPath PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
+          artifacts: 
+          - PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
+          - PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
           tag: v${{ needs.version.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
