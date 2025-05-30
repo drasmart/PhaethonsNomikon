@@ -38,7 +38,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish project
-        run: dotnet publish -c Release /p:Version=${{ needs.version.outputs.version }} -o output
+        run: dotnet publish ./PhaethonsNomikon/PhaethonsNomikon.csproj -c Release /p:Version=${{ needs.version.outputs.version }} -o output
 
       - name: Create ZIP archive
         run: Compress-Archive -Path output\* -DestinationPath PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
