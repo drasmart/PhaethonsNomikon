@@ -1,13 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +13,9 @@ public partial class MainWindow : Window
     private readonly double _logBoxMinHeight;
     private double _lastLogBoxHeight;
     private readonly ILogger _logger;
+    
+    public string AppTitle { get; }
+        = "Phaethon's Nomikon " + Assembly.GetExecutingAssembly().GetName().Version;
 
     public SaveDocument Document { get; set; }
     

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PhaethonsNomikon"
         xmlns:mySimpleLogging="clr-namespace:MySimpleLogging;assembly=MySimpleLogging"
         mc:Ignorable="d"
-        Title="Phaethon's Nomikon"
+        Title="{Binding AppTitle, RelativeSource={RelativeSource Self}}"
         WindowState="Maximized"
         Height="450" Width="800">
     <DockPanel>
