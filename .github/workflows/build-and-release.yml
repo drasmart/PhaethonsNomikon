@@ -52,8 +52,6 @@ jobs:
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: 
-            - PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
-            - PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
+          artifacts: PhaethonsNomikon-${{ needs.version.outputs.version }}.zip,PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
           tag: v${{ needs.version.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
