@@ -44,7 +44,7 @@ jobs:
         run: Compress-Archive -Path output\* -DestinationPath PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
 
       - name: Publish project (self-contained)
-        run: dotnet publish ./PhaethonsNomikon/PhaethonsNomikon.csproj -c Release /p:Version=${{ needs.version.outputs.version }} -o output-sc
+        run: dotnet publish ./PhaethonsNomikon/PhaethonsNomikon.csproj -c Release /p:Version=${{ needs.version.outputs.version }} -o output-sc --self-contained
 
       - name: Create ZIP archive (self-contained)
         run: Compress-Archive -Path output-sc\* -DestinationPath PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
