@@ -1,4 +1,4 @@
 ﻿namespace PhaethonsNomikon;
 
 [Serializable]
-public record StatRow(string Value, bool Preferred);
+public record StatRow(string Value, bool Preferred, int Level);

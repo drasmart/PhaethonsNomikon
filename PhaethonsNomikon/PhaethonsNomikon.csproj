@@ -20,4 +20,8 @@
       <ProjectReference Include="..\MySimpleLogging\MySimpleLogging.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Resource Include="Fonts\HildaBroad.ttf" />
+    </ItemGroup>
+
 </Project>

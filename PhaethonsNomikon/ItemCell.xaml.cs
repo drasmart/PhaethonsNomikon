@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace PhaethonsNomikon;
 
@@ -12,6 +13,10 @@ public partial class ItemCell : AgentCellBase
         get => (AgentData.Item)GetValue(ItemProperty);
         set => SetValue(ItemProperty, value);
     }
+
+    public string EvaluationLetter { get; private set; } = "?";
+    public Brush EvaluationColor { get; private set; } = Brushes.Pink;
+    public double EvaluationFontSize { get; private set; } = 0;
     
     private static void OnItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -25,9 +30,9 @@ public partial class ItemCell : AgentCellBase
 
     public IEnumerable<StatRow> Stats { get; private set; } =
     [
-        new("(ATK)", true),
-        new("(DEF)", false),
-        new("(HP)", false),
+        new("(ATK)", true, 1),
+        new("(DEF)", false, 1),
+        new("(HP)", false, 1),
     ];
 
     private void UpdateStats(AgentData? agent, AgentData.Item? item)
@@ -39,7 +44,31 @@ public partial class ItemCell : AgentCellBase
         }
         Stats = item.AllProperties.Select(p => new StatRow(
             p.ToString(),
-            agent.PreferredStats?.Any(x => x.FullName == p.Name) == true));
+            agent.PreferredStats?.Any(x => x.FullName == p.Name) == true,
+            p.Level ?? 1));
+        int evaluation = Stats.Aggregate(0, (i, row) => i + (row.Preferred ? row.Level : 0));
+        ApplyEvaluation(evaluation);
+    }
+
+    private void ApplyEvaluation(int evaluation)
+    {
+        (string, Brush, double) settings = evaluation switch
+        {
+            0 => ("F", Brushes.Magenta, 80),
+            1 => ("E", Brushes.OrangeRed, 80),
+            2 => ("D", Brushes.DeepSkyBlue, 80),
+            3 => ("C", Brushes.ForestGreen, 80),
+            4 => ("B", Brushes.LimeGreen, 80),
+            5 => ("A", Brushes.Yellow, 80),
+            6 => ("S", Brushes.Orange, 80),
+            7 => ("SS", Brushes.Orange, 56),
+            8 => ("SSS", Brushes.Orange, 36),
+            9 => ("GOD", Brushes.Gold, 36),
+            _ => ("GOD+", Brushes.Gold, 28),
+        };
+        EvaluationLetter = settings.Item1;
+        EvaluationColor = settings.Item2;
+        EvaluationFontSize = settings.Item3;
     }
 
     public ItemCell()
