@@ -53,7 +53,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: 
-          - PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
-          - PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
+            - PhaethonsNomikon-${{ needs.version.outputs.version }}.zip
+            - PhaethonsNomikon-${{ needs.version.outputs.version }}-self-contained.zip
           tag: v${{ needs.version.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
