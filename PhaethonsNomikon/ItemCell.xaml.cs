@@ -35,6 +35,13 @@ public partial class ItemCell : AgentCellBase
         new("(HP)", false, 1),
     ];
 
+    private static readonly IEnumerable<string> PreferredOverrides =
+    [
+        "ATK",
+        "CRIT Rate",
+        "CRIT DMG",
+    ];
+
     private void UpdateStats(AgentData? agent, AgentData.Item? item)
     {
         if (agent is null || item is null)
@@ -44,10 +51,18 @@ public partial class ItemCell : AgentCellBase
         }
         Stats = item.AllProperties.Select(p => new StatRow(
             p.ToString(),
-            agent.PreferredStats?.Any(x => x.FullName == p.Name) == true,
-            p.Level ?? 1));
-        int evaluation = Stats.Aggregate(0, (i, row) => i + (row.Preferred ? row.Level : 0));
-        ApplyEvaluation(evaluation);
+            (agent.PreferredStats?.Any(x => x.FullName == p.Name) == true)
+            || PreferredOverrides.Contains(p.Name),
+            p.Level is {} level and > 1 ? level : 1));
+        if (item.Star is null)
+        {
+            int evaluation = Stats.Skip(1).Aggregate(0, (i, row) => i + (row.Preferred ? row.Level : 0));
+            ApplyEvaluation(evaluation);
+        }
+        else
+        {
+            EvaluationLetter = string.Empty;
+        }
     }
 
     private void ApplyEvaluation(int evaluation)
