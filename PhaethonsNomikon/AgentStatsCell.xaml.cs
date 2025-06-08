@@ -48,7 +48,7 @@ public partial class AgentStatsCell : AgentCellBase
         var stats = Enumerable.Range(0, columns)
             .Select(_ => new List<StatRow>())
             .ToList();
-        var perColumn = props.Count / columns;
+        var perColumn = (int)Math.Ceiling(props.Count / (float)columns);
         for (int i = 0; i < props.Count; i++)
         {
             StatRow newRow = new(
