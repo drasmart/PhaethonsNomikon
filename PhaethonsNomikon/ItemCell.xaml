@@ -52,9 +52,17 @@
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontWeight" Value="Normal"/>
+                                    <Setter Property="FontStyle" Value="Normal"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Preferred}" Value="True">
+                                        <DataTrigger Binding="{Binding Preference}" Value="2">
                                             <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Preference}" Value="1">
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontStyle" Value="Italic"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Preference}" Value="0">
+                                            <Setter Property="FontStyle" Value="Italic"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

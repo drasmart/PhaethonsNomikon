@@ -30,9 +30,9 @@ public partial class ItemCell : AgentCellBase
 
     public IEnumerable<StatRow> Stats { get; private set; } =
     [
-        new("(ATK)", true, 1),
-        new("(DEF)", false, 1),
-        new("(HP)", false, 1),
+        new("(ATK)", StatPreference.Preferred, 1),
+        new("(DEF)", StatPreference.NotWanted, 1),
+        new("(HP)", StatPreference.Fallback, 1),
     ];
 
     private static readonly IEnumerable<string> PreferredOverrides =
@@ -49,17 +49,25 @@ public partial class ItemCell : AgentCellBase
             Stats = [];
             return;
         }
-        Stats = item.AllProperties.Select(p => new StatRow(
-            p.ToString(),
-            (agent.PreferredStats?.Any(x => x.FullName == p.Name) == true)
-            || PreferredOverrides.Contains(p.Name),
-            GetLevel(p)));
+        Stats = item.AllProperties.Select(p =>
+        {
+            StatPreference preference = p.Name switch
+            {
+                { } propName when agent.PreferredStats?.Any(x => x.FullName == propName) == true => StatPreference.Preferred,
+                { } propName when PreferredOverrides.Contains(propName) => StatPreference.Fallback,
+                _ => StatPreference.NotWanted,
+            };
+            return new StatRow(
+                p.ToString(),
+                preference,
+                GetLevel(p));
+        });
         if (item.Star is null)
         {
-            int evaluation = item.Rarity == "S"
-                ? Stats.Skip(1).Aggregate(0, (i, row) => i + (row.Preferred ? row.Level : 0))
-                : -1;
-            ApplyEvaluation(evaluation, item is { Rarity: "S", Level: < 15 });
+            float evaluation = item.Rarity == "S"
+                ? Stats.Skip(1).Aggregate(0f, (i, row) => i + ((float)row.Preference)*row.Level/2)
+                : -1f;
+            ApplyEvaluation((int)evaluation, item is { Rarity: "S", Level: < 15 });
         }
         else
         {

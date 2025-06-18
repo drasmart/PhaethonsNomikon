@@ -25,11 +25,11 @@ public partial class AgentStatsCell : AgentCellBase
     public IEnumerable<IEnumerable<StatRow>> Stats { get; private set; } =
     [
         [
-            new StatRow("(ATK)", true, 1),
-            new StatRow("(DEF)", false, 1),
+            new StatRow("(ATK)", StatPreference.Preferred, 1),
+            new StatRow("(DEF)", StatPreference.NotWanted, 1),
         ],
         [
-            new StatRow("(HP)", false, 1),
+            new StatRow("(HP)", StatPreference.Fallback, 1),
         ],
     ];
 
@@ -53,7 +53,8 @@ public partial class AgentStatsCell : AgentCellBase
         {
             StatRow newRow = new(
                 props[i].ToString(),
-                agent.PreferredStats?.Any(x => x.FullName == props[i].Name) == true,
+                agent.PreferredStats?.Any(x => x.FullName == props[i].Name) == true
+                ? StatPreference.Preferred : StatPreference.NotWanted,
                 1);
             stats[i / perColumn].Add(newRow);
         }

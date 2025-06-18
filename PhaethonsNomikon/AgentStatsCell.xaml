@@ -50,7 +50,7 @@
                                         <Style TargetType="TextBlock">
                                             <Setter Property="FontWeight" Value="Normal"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Preferred}" Value="True">
+                                                <DataTrigger Binding="{Binding Preference}" Value="2">
                                                     <Setter Property="FontWeight" Value="Bold"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
