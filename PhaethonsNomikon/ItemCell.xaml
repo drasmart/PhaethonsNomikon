@@ -21,6 +21,17 @@
                         <DropShadowEffect Color="Black" BlurRadius="8"
                                           ShadowDepth="0" Opacity="1"/>
                     </TextBlock.Effect>
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsStripeVisible, RelativeSource={RelativeSource AncestorType=local:MainArea}}" Value="True">
+                                    <Setter Property="Text" Value="{Binding EvaluationLetter, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
+                                    <Setter Property="Foreground" Value="{Binding EvaluationColor, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
+                                    <Setter Property="FontSize" Value="{Binding EvaluationFontSize, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
                 </TextBlock>
             </Grid>
             <TextBlock HorizontalAlignment="Center"

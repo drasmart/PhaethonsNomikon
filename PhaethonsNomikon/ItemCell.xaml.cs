@@ -17,6 +17,23 @@ public partial class ItemCell : AgentCellBase
     public string EvaluationLetter { get; private set; } = "?";
     public Brush EvaluationColor { get; private set; } = Brushes.Pink;
     public double EvaluationFontSize { get; private set; } = 0;
+
+    public static readonly DependencyProperty IsStripeVisibleProperty =
+        DependencyProperty.Register(nameof(IsStripeVisible), typeof(bool), typeof(ItemCell), new PropertyMetadata(OnIsStripeVisibleChanged));
+
+    public bool IsStripeVisible
+    {
+        get => (bool)GetValue(IsStripeVisibleProperty);
+        set => SetValue(IsStripeVisibleProperty, value);
+    }
+
+    private static void OnIsStripeVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is ItemCell cell)
+        {
+            cell.UpdateStats(cell.Agent, cell.Item);
+        }
+    }
     
     private static void OnItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -64,8 +81,8 @@ public partial class ItemCell : AgentCellBase
         });
         if (item.Star is null)
         {
-            float evaluation = item.Rarity == "S"
-                ? Stats.Skip(1).Aggregate(0f, (i, row) => i + ((float)row.Preference)*row.Level/2)
+            var evaluation = item.Rarity == "S"
+                ? Stats.Skip(1).Aggregate(0f, (i, row) => i + CalculatePreferenceFactor(row.Preference) * row.Level)
                 : -1f;
             ApplyEvaluation((int)evaluation, item is { Rarity: "S", Level: < 15 });
         }
@@ -128,6 +145,13 @@ public partial class ItemCell : AgentCellBase
         EvaluationLetter = settings.Item1 + (canUpgrade ? "+" : "");
         EvaluationColor = settings.Item2;
         EvaluationFontSize = size;
+    }
+
+    private float CalculatePreferenceFactor(StatPreference preferenceSource)
+    {
+        return IsStripeVisible
+            ? ((float)preferenceSource) / 2.0f
+            : preferenceSource == StatPreference.NotWanted ? 0 : 1;
     }
 
     public ItemCell()
