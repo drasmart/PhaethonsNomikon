@@ -11,10 +11,10 @@
             <Grid>
                 <Image Stretch="Uniform"
                        Source="{Binding Item.IconUrl, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue={x:Null}}" />
-                <TextBlock Text="{Binding EvaluationLetter, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=%}"
+                <TextBlock Text="{Binding Evaluation.EvaluationLetter, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=%}"
                            FontFamily="./Fonts/#Hilda Broad"
-                           Foreground="{Binding EvaluationColor, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"
-                           FontSize="{Binding EvaluationFontSize, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=80}"
+                           Foreground="{Binding Evaluation.EvaluationColor, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"
+                           FontSize="{Binding Evaluation.EvaluationFontSize, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=80}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center">
                     <TextBlock.Effect>
@@ -25,9 +25,9 @@
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsStripeVisible, RelativeSource={RelativeSource AncestorType=local:MainArea}}" Value="True">
-                                    <Setter Property="Text" Value="{Binding EvaluationLetter, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
-                                    <Setter Property="Foreground" Value="{Binding EvaluationColor, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
-                                    <Setter Property="FontSize" Value="{Binding EvaluationFontSize, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
+                                    <Setter Property="Text" Value="{Binding Evaluation.EvaluationLetter, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
+                                    <Setter Property="Foreground" Value="{Binding Evaluation.EvaluationColor, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
+                                    <Setter Property="FontSize" Value="{Binding Evaluation.EvaluationFontSize, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

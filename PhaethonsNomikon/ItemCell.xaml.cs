@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel;
 using System.Windows.Media;
+using Microsoft.Extensions.Logging;
 
 namespace PhaethonsNomikon;
 
@@ -14,23 +17,35 @@ public partial class ItemCell : AgentCellBase
         set => SetValue(ItemProperty, value);
     }
 
-    public string EvaluationLetter { get; private set; } = "?";
-    public Brush EvaluationColor { get; private set; } = Brushes.Pink;
-    public double EvaluationFontSize { get; private set; } = 0;
+    public EvaluationData Evaluation { get; } = new();
 
-    public static readonly DependencyProperty IsStripeVisibleProperty =
-        DependencyProperty.Register(nameof(IsStripeVisible), typeof(bool), typeof(ItemCell), new PropertyMetadata(OnIsStripeVisibleChanged));
+    public static readonly DependencyProperty SettingsProperty =
+        DependencyProperty.Register(nameof(Settings), typeof(MainAreaSettings), typeof(ItemCell), new PropertyMetadata(OnSettingsChanged));
 
-    public bool IsStripeVisible
+    public MainAreaSettings? Settings
     {
-        get => (bool)GetValue(IsStripeVisibleProperty);
-        set => SetValue(IsStripeVisibleProperty, value);
+        get => GetValue(SettingsProperty) as MainAreaSettings;
+        set => SetValue(SettingsProperty, value);
     }
 
-    private static void OnIsStripeVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private void OnSettingsContentChanged(object? d, PropertyChangedEventArgs e)
+    {
+        // Logger.LogInformation("Cell of {agentFullName} -- {func}", Agent.FullName, nameof(OnSettingsContentChanged));
+        UpdateStats(Agent, Item);
+    }
+
+    private static void OnSettingsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is ItemCell cell)
         {
+            if (e.OldValue is MainAreaSettings oldSettings)
+            {
+                oldSettings.PropertyChanged -= cell.OnSettingsContentChanged;
+            }
+            if (e.NewValue is MainAreaSettings newSettings)
+            {
+                newSettings.PropertyChanged += cell.OnSettingsContentChanged;
+            }
             cell.UpdateStats(cell.Agent, cell.Item);
         }
     }
@@ -88,7 +103,7 @@ public partial class ItemCell : AgentCellBase
         }
         else
         {
-            EvaluationLetter = string.Empty;
+            Evaluation.EvaluationLetter = string.Empty;
         }
     }
 
@@ -142,14 +157,15 @@ public partial class ItemCell : AgentCellBase
             3 => 36,
             _ => 28,
         };
-        EvaluationLetter = settings.Item1 + (canUpgrade ? "+" : "");
-        EvaluationColor = settings.Item2;
-        EvaluationFontSize = size;
+        Evaluation.EvaluationLetter = settings.Item1 + (canUpgrade ? "+" : "");
+        Evaluation.EvaluationColor = settings.Item2;
+        Evaluation.EvaluationFontSize = size;
+        Logger.LogInformation("{agentFullName} -- eval. {evalLetter}", Agent.FullName, Evaluation.EvaluationLetter);
     }
 
     private float CalculatePreferenceFactor(StatPreference preferenceSource)
     {
-        return IsStripeVisible
+        return Settings?.IsStripeVisible == true
             ? ((float)preferenceSource) / 2.0f
             : preferenceSource == StatPreference.NotWanted ? 0 : 1;
     }

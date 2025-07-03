@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <ToggleButton Grid.Column="1" Content="Stripe" Margin="5" IsChecked="{Binding IsStripeVisible, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}" />
+            <ToggleButton Grid.Column="1" Content="Stripe" Margin="5" IsChecked="{Binding Settings.IsStripeVisible, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}" />
         </Grid>
         <ListView Grid.Row="1"
                   x:Name="MainListView"
@@ -53,7 +53,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Weapon, RelativeSource={RelativeSource Self}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -62,7 +62,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Equipment[0], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -71,7 +71,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Equipment[1], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -80,7 +80,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Equipment[2], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -89,7 +89,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Equipment[3], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -98,7 +98,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Equipment[4], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -107,7 +107,7 @@
                             <DataTemplate>
                                 <local:ItemCell RealAgent="{Binding}"
                                                 Item="{Binding Agent.Equipment[5], RelativeSource={RelativeSource Self}, FallbackValue={x:Null}}"
-                                                IsStripeVisible="{Binding IsStripeVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
+                                                Settings="{Binding Settings, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

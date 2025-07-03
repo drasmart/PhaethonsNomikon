@@ -43,17 +43,7 @@ public partial class MainArea : MyUserControl
         set => SetValue(RealDocumentProperty, value);
     }
 
-    private bool _isStripeVisible;
-
-    public bool IsStripeVisible
-    {
-        get => _isStripeVisible;
-        set
-        {
-            _isStripeVisible = value;
-            Logger.LogInformation("IsStripeVisible: {value}", value);
-        }
-    }
+    public MainAreaSettings Settings { get; init; } = new();
 
     public MainArea()
     {
