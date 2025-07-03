@@ -6,17 +6,17 @@ public class MainAreaSettings : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private bool _isStripeVisible;
+    private bool _treatFallbackDistinctly;
 
-    public bool IsStripeVisible
+    public bool TreatFallbackDistinctly
     {
-        get => _isStripeVisible;
+        get => _treatFallbackDistinctly;
         set
         {
-            if (_isStripeVisible != value)
+            if (_treatFallbackDistinctly != value)
             {
-                _isStripeVisible = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsStripeVisible)));
+                _treatFallbackDistinctly = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TreatFallbackDistinctly)));
             }
         }
     }

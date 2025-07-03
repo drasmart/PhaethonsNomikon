@@ -160,12 +160,12 @@ public partial class ItemCell : AgentCellBase
         Evaluation.EvaluationLetter = settings.Item1 + (canUpgrade ? "+" : "");
         Evaluation.EvaluationColor = settings.Item2;
         Evaluation.EvaluationFontSize = size;
-        Logger.LogInformation("{agentFullName} -- eval. {evalLetter}", Agent.FullName, Evaluation.EvaluationLetter);
+        // Logger.LogInformation("{agentFullName} -- eval. {evalLetter}", Agent.FullName, Evaluation.EvaluationLetter);
     }
 
     private float CalculatePreferenceFactor(StatPreference preferenceSource)
     {
-        return Settings?.IsStripeVisible == true
+        return Settings?.TreatFallbackDistinctly == true
             ? ((float)preferenceSource) / 2.0f
             : preferenceSource == StatPreference.NotWanted ? 0 : 1;
     }

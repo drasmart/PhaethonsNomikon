@@ -24,7 +24,7 @@
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsStripeVisible, RelativeSource={RelativeSource AncestorType=local:MainArea}}" Value="True">
+                                <DataTrigger Binding="{Binding Settings.TreatFallbackDistinctly, RelativeSource={RelativeSource AncestorType=local:MainArea}}" Value="True">
                                     <Setter Property="Text" Value="{Binding Evaluation.EvaluationLetter, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
                                     <Setter Property="Foreground" Value="{Binding Evaluation.EvaluationColor, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>
                                     <Setter Property="FontSize" Value="{Binding Evaluation.EvaluationFontSize, RelativeSource={RelativeSource AncestorType=local:ItemCell}, FallbackValue=Orange}"/>

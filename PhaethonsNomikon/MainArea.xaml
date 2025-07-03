@@ -20,7 +20,25 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Main Content Area" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <ToggleButton Grid.Column="1" Content="Stripe" Margin="5" IsChecked="{Binding Settings.IsStripeVisible, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}" />
+            <StackPanel Grid.Column="1"  Orientation="Horizontal">
+                <TextBlock Text="Fallback Treatment:" VerticalAlignment="Center" Margin="5"/>
+                <ToggleButton Margin="5" IsChecked="{Binding Settings.TreatFallbackDistinctly, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}" >
+                    <ToggleButton.Content>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="Preferred" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Settings.TreatFallbackDistinctly, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainArea}}}" Value="True">
+                                            <Setter Property="Text" Value="Distinct" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
+            </StackPanel>
         </Grid>
         <ListView Grid.Row="1"
                   x:Name="MainListView"
