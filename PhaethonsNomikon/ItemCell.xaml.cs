@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Media;
 using Microsoft.Extensions.Logging;
 
@@ -115,7 +116,7 @@ public partial class ItemCell : AgentCellBase
         }
         bool isPercent = (itemProperty.Base ?? "").Contains('%');
         string rawValue = (itemProperty.Base ?? "").Replace("%", "");
-        double valueNum = double.Parse(rawValue);
+        double valueNum = double.Parse(rawValue, CultureInfo.InvariantCulture);
         double? singleRoll = (itemProperty.Name ?? "", isPercent) switch
         {
             ("HP", true) => 3, 
