@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using PhaethonsNomikon.SaveData;
 
@@ -20,10 +21,10 @@ public class SaveDocument
         ShouldLoad = shouldLoad;
     }
     
-    public SaveDocument(string filePath)
+    public SaveDocument(string filePath, ILogger logger)
     {
         FilePath = filePath;
-        Content = SaveHelper.Load(filePath);
+        Content = SaveHelper.Load(filePath, logger);
         HasLoaded = true;
     }
     
@@ -54,7 +55,7 @@ public class SaveDocument
         }
     }
     
-    public static SaveDocument? Open()
+    public static SaveDocument? Open(ILogger logger)
     {
         OpenFileDialog openFileDialog = new OpenFileDialog
         {
@@ -62,7 +63,7 @@ public class SaveDocument
             Title = "Open " + Title,
         };
         return openFileDialog.ShowDialog() == true
-            ? new SaveDocument(openFileDialog.FileName)
+            ? new SaveDocument(openFileDialog.FileName, logger)
             : null;
     }
 }
