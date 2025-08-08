@@ -11,6 +11,8 @@ using Content = SaveData.v1.SaveContent;
 [Serializable]
 public class SaveDocument
 {
+    public static string DefaultSaveName => $"agents_{DateTime.Now:yyMMdd_HHmmss}";
+    
     public string? FilePath { get; set; }
     public Content Content { get; set; } = new();
     public bool ShouldLoad { get; set; }
@@ -42,7 +44,10 @@ public class SaveDocument
             SaveFileDialog saveFileDialog1 = new SaveFileDialog
             {
                 Filter = Filter,
-                Title = "Save " + Title
+                Title = "Save " + Title,
+                FileName = !string.IsNullOrWhiteSpace(FilePath)
+                    ? Path.GetFileNameWithoutExtension(FilePath)
+                    : DefaultSaveName,
             };
             if (saveFileDialog1.ShowDialog() == true)
             {

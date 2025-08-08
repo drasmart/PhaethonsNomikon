@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -57,7 +58,13 @@ public partial class MainWindow : Window
     {
         if (LogViewBox != null)
         {
-            MyUserControl.SaveFullListViewAsImage(FirstMainArea.MainListView, "agents.png", "Save agents list as PNG");
+            string imageName = FirstMainArea.RealDocument?.FilePath is { } docPath && !string.IsNullOrWhiteSpace(docPath)
+                ? Path.GetFileNameWithoutExtension(docPath)
+                : SaveDocument.DefaultSaveName;
+            MyUserControl.SaveFullListViewAsImage(
+                FirstMainArea.MainListView,
+                imageName,
+                "Save agents list as PNG");
         }
     }
 
