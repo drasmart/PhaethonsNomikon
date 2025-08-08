@@ -56,16 +56,12 @@ public partial class MainWindow : Window
     
     private void Button2_Click(object sender, RoutedEventArgs e)
     {
-        if (LogViewBox != null)
-        {
-            string imageName = FirstMainArea.RealDocument?.FilePath is { } docPath && !string.IsNullOrWhiteSpace(docPath)
-                ? Path.GetFileNameWithoutExtension(docPath)
-                : SaveDocument.DefaultSaveName;
-            MyUserControl.SaveFullListViewAsImage(
-                FirstMainArea.MainListView,
-                imageName,
-                "Save agents list as PNG");
-        }
+        FirstMainArea.SaveAgentList();
+    }
+
+    private void Button3_Click(object sender, RoutedEventArgs e)
+    {
+        FirstMainArea.SaveSelectedAgentList();
     }
 
     private void ToggleLogView_Unchecked(object sender, RoutedEventArgs e)

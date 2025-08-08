@@ -11,7 +11,8 @@ using Content = SaveData.v1.SaveContent;
 [Serializable]
 public class SaveDocument
 {
-    public static string DefaultSaveName => $"agents_{DateTime.Now:yyMMdd_HHmmss}";
+    public static string DefaultSaveName => $"agents_{TimestampString}";
+    public static string TimestampString => $"{DateTime.Now:yyMMdd_HHmmss}";
     
     public string? FilePath { get; set; }
     public Content Content { get; set; } = new();

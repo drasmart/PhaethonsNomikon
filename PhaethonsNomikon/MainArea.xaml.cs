@@ -274,6 +274,52 @@ public partial class MainArea : MyUserControl
         }
         MyTabControl.SelectedIndex = 0;
     }
+    
+    public void SaveAgentList()
+    {
+        string imageName = RealDocument?.FilePath is { } docPath && !string.IsNullOrWhiteSpace(docPath)
+            ? Path.GetFileNameWithoutExtension(docPath)
+            : SaveDocument.DefaultSaveName;
+        SaveFullListViewAsImage(
+            MainListView,
+            imageName,
+            "Save agents list as PNG");
+    }
+
+    public void SaveSelectedAgentList()
+    {
+        var backup = _rawAgents.ToList();
+        {
+            var toSelect = new List<AgentData>();
+            foreach (var item in MainListView.SelectedItems)
+            {
+                toSelect.Add((AgentData)item);
+            }
+            _rawAgents.Clear();
+            foreach (var item in toSelect)
+            {
+                _rawAgents.Add(item);
+            }
+        }
+        try
+        {
+            string imageName = RealDocument?.FilePath is { } docPath && !string.IsNullOrWhiteSpace(docPath)
+                ? Path.GetFileNameWithoutExtension(docPath)
+                : SaveDocument.DefaultSaveName;
+            SaveFullListViewAsImage(
+                MainListView,
+                imageName + $"_part_{SaveDocument.TimestampString}",
+                "Save selected agents list as PNG");
+        }
+        finally
+        {
+            _rawAgents.Clear();
+            foreach (var item in backup)
+            {
+                _rawAgents.Add(item);
+            }
+        }
+    }
 
     public class AgentListTabModel : BrowserTabModel
     {

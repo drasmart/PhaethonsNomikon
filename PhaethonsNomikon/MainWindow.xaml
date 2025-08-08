@@ -21,6 +21,9 @@
             <StatusBarItem>
                 <Button Content="Save Equip Image" Click="Button2_Click"/>
             </StatusBarItem>
+            <StatusBarItem>
+                <Button Content="Save Selected Equip Image" Click="Button3_Click"/>
+            </StatusBarItem>
 
             <StatusBarItem>
                 <TextBlock Text="{Binding [0], Source={x:Static mySimpleLogging:LoggingService.LastMessage}}" />
